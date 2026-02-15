@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="fr" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mohamed Slimani - Portfolio</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <!-- Tailwind (CDN) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            dark: '#1E1E1E',
+            light: '#F4F4F5',
+            cyan: { 400: '#22d3ee', 500: '#06b6d4' }
+          },
+          fontFamily: {
+            sans: ['Syne', 'sans-serif'],
+            mono: ['Space Mono', 'monospace'],
+          },
+          animation: {
+             'fade-in-up': 'fadeInUp 0.8s ease-out forwards',
+             'bounce-slow': 'bounce 3s infinite',
+             'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+          },
+          keyframes: {
+            fadeInUp: {
+              '0%': { opacity: '0', transform: 'translateY(20px)' },
+              '100%': { opacity: '1', transform: 'translateY(0)' },
+            },
+            shimmer: {
+              '0%': { backgroundPosition: '-100% 0' },
+              '100%': { backgroundPosition: '200% 0' }
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- GSAP (IMPORTANT: gsap.min.js BEFORE ScrollTrigger) -->
+  <!-- GSAP (IMPORTANT: gsap.min.js first, then ScrollTrigger) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+
+  <!-- Your CSS -->
+  <link rel="stylesheet" href="/assets/css/main.css" />
+
+  <style>
+    body { background:#1E1E1E; color:#F4F4F5; font-family:'Space Mono',monospace; }
+  </style>
+</head>
+
+<body class="bg-dark text-light font-mono overflow-x-hidden relative">
+
+  <!-- Background video (LIGHT on mobile: paused via JS + preload none) -->
+  <div class="video-background" aria-hidden="true">
+    <video id="bg-video" muted loop playsinline preload="none" poster="/assets/images/fallback-poster.jpg">
+      <source src="/assets/videos/anim.mp4" type="video/mp4">
+      <source src="/assets/videos/website-bg.webm" type="video/webm">
+    </video>
+    <div class="video-overlay"></div>
+  </div>
+
+  <!-- Background Canvas -->
+  <canvas id="background-canvas" class="fixed inset-0 -z-10 w-full h-full"></canvas>
+
+  <!-- Scroll To Top -->
+  <div class="fixed bottom-20 right-6 z-50">
+    <button id="scrollToTopBtn" class="hidden" aria-label="Scroll to Top">
+      <svg class="scroll-icon" viewBox="0 0 384 512">
+        <path d="M214.6 41.4c-12.5-12.5-32.8-12.5-45.3 0l-160 160c-12.5 12.5-12.5 32.8 
+                 0 45.3s32.8 12.5 45.3 0L160 141.2V448c0 17.7 14.3 32 
+                 32 32s32-14.3 32-32V141.2L329.4 246.6c12.5 
+                 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3l-160-160z"/>
+      </svg>
+      <span class="scroll-label">Back to Top</span>
+    </button>
+  </div>
+
+<!-- HEADER -->
+<!-- HEADER -->
+<header class="fixed top-0 left-0 w-full h-20 md:h-24 z-50 transition-all duration-300 bg-black/30 backdrop-blur-md border-b border-white/10 shadow-lg">
+  <div class="max-w-7xl mx-auto px-4 h-full flex items-center justify-between">
+    
+    <!-- LEFT: LOGO -->
+    <a href="#" class="flex items-center gap-2 group">
+      <img src="/assets/images/neoslim-logo.gif" alt="NeoSlim Logo" class="h-12 w-auto group-hover:scale-110 transition-transform duration-300">
+
+    </a>
+
+    <!-- CENTER: DESKTOP NAV -->
+    <nav class="hidden md:flex items-center gap-8">
+      <a href="#hero" class="text-sm font-semibold text-gray-300 hover:text-cyan-400 uppercase tracking-wider transition-colors">Home</a>
+      <a href="#about" class="text-sm font-semibold text-gray-300 hover:text-cyan-400 uppercase tracking-wider transition-colors">About</a>
+      <a href="skills.html" class="text-sm font-semibold text-gray-300 hover:text-cyan-400 uppercase tracking-wider transition-colors">Skills</a>
+      <a href="#works-section" class="text-sm font-semibold text-gray-300 hover:text-cyan-400 uppercase tracking-wider transition-colors">Projects</a>
+      <a href="#contact-section" class="text-sm font-semibold text-gray-300 hover:text-cyan-400 uppercase tracking-wider transition-colors">Contact</a>
+    </nav>
+
+    <!-- RIGHT: ACTIONS -->
+    <div class="flex items-center gap-4">
+      <!-- MOBILE MENU BUTTON -->
+      <button id="menuBtn" class="md:hidden relative z-[60] w-10 h-10 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 transition-colors focus:outline-none">
+        <span class="menu-icon custom-hamburger"></span>
+      </button>
+    </div>
+  </div>
+
+  <!-- MOBILE MENU OVERLAY -->
+  <div id="mobileMenu" class="fixed inset-0 z-40 bg-black/95 backdrop-blur-xl transform translate-x-full transition-transform duration-300 flex flex-col items-center justify-center space-y-8 md:hidden">
+    <a href="#hero" class="text-2xl font-bold text-white hover:text-cyan-400 transition-colors">Home</a>
+    <a href="#about" class="text-2xl font-bold text-white hover:text-cyan-400 transition-colors">About</a>
+    <a href="skills.html" class="text-2xl font-bold text-white hover:text-cyan-400 transition-colors">Skills</a>
+    <a href="#works-section" class="text-2xl font-bold text-white hover:text-cyan-400 transition-colors">Projects</a>
+    <a href="#contact-section" class="text-2xl font-bold text-white hover:text-cyan-400 transition-colors">Contact</a>
+    <a href="#" class="px-8 py-3 text-lg font-bold text-black bg-cyan-400 rounded-full hover:bg-cyan-300 shadow-[0_0_20px_rgba(34,211,238,0.4)]">Download CV</a>
+  </div>
+</header>
+
+  <main class="pt-28 md:pt-32">
+
+    <!-- HERO (only video that matters on load) -->
+    <section id="hero" class="relative min-h-screen flex items-center justify-center text-center overflow-hidden">
+      <div class="absolute inset-0 z-0 overflow-hidden">
+        <video id="hero-video" autoplay loop muted playsinline preload="metadata" class="w-full h-full object-cover" poster="/assets/images/fallback-poster.jpg">
+          <source src="/assets/videos/neohero.mp4" type="video/mp4">
+        </video>
+        <div class="absolute inset-0 bg-black/60"></div>
+      </div>
+      <div class="relative z-10 px-4 mt-96 flex flex-col items-center gap-8">
+        <h2 class="text-xl md:text-2xl font-bold font-sans tracking-[0.3em] uppercase animate-fade-in-up bg-gradient-to-r from-gray-500 via-gray-200 to-gray-500 bg-[length:200%_100%] bg-clip-text text-transparent animate-[shimmer_3s_infinite_linear]">
+          Creative Developer & UI/UX Designer
+        </h2>
+        
+        <!-- Scroll Indicator -->
+        <div class="animate-bounce-slow">
+          <a href="#about" class="flex flex-col items-center gap-2 text-cyan-400 hover:text-cyan-300 transition-colors">
+            <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+            </svg>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ABOUT -->
+    <section id="about" class="py-24 bg-dark text-light">
+      <div class="max-w-6xl mx-auto px-4">
+        <div class="flex justify-center mb-12">
+          <img src="/assets/images/am2.png" alt="Logo Mohamed Slimani"
+               loading="lazy" decoding="async"
+               class="h-56 w-auto transition-transform duration-700 ease-in-out hover:scale-110 hover:rotate-2">
+        </div>
+
+        <div class="grid lg:grid-cols-5 gap-12 items-center">
+          <div class="relative lg:col-span-2 flex justify-center">
+            <img
+              src="/assets/images/maphoto.gif"
+              alt="Photo de Mohamed Slimani"
+              loading="lazy"
+              decoding="async"
+              width="384"
+              height="480"
+              class="relative w-80 md:w-96 rounded-xl shadow-lg hover:scale-105 transition duration-300 ease-in-out"
+            >
+          </div>
+
+          <div class="lg:col-span-3">
+            <p class="text-green font-semibold tracking-wider">ABOUT ME</p>
+            <h2 class="text-4xl md:text-5xl font-bold font-sans mt-2 text-light">
+              Creative Developer, passionate about bridging the gap between design and code.
+            </h2>
+            <p class="mt-6 text-lg text-gray-300 leading-relaxed">
+              For as long as I can remember, I've always been fascinated by how things are built...
+            </p>
+            <p class="mt-4 text-lg text-gray-300 leading-relaxed">
+              My approach is user-centric: transforming complex ideas into simple and elegant solutions.
+            </p>
+
+
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- WORKS -->
+    <section id="works-section" class="relative">
+      <!-- TOGGLE BUTTON -->
+      <div class="flex justify-center py-16 bg-dark">
+        <button id="toggleProjectsBtn" class="btn-cube" type="button">
+          <div class="cube">
+            <div class="bg-top">
+            <div class="bg-inner"></div>
+            </div>
+            <div class="bg-right">
+            <div class="bg-inner"></div>
+            </div>
+            <div class="bg">
+            <div class="bg-inner"></div>
+            </div>
+            <div class="text flex items-center gap-3">
+              <span id="toggleText">SHOW PROJECTS</span>
+              <svg id="toggleIcon" class="w-5 h-5 transition-transform duration-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+              </svg>
+            </div>
+          </div>
+        </button>
+      </div>
+
+      <!-- PROJECTS CONTAINER (Hidden by default) -->
+      <div id="projectsContainer" class="hidden transition-all duration-500 ease-in-out">
+      <div class="grid md:grid-cols-2">
+        <!-- DESIGN PANEL -->
+        <!-- DESIGN PANEL -->
+        <!-- DESIGN PANEL -->
+        <!-- DESIGN PANEL -->
+        <div id="design-panel" onclick="window.location.href='design.html'" class="relative z-0 min-h-[420px] bg-gradient-to-br from-amber-600/30 via-orange-900/40 to-red-900/40 animate-gradient-xy backdrop-blur-xl border border-orange-500/20 text-white p-8 flex flex-col justify-center items-center text-center cursor-pointer hover:scale-[1.02] transition-transform duration-300 overflow-hidden">
+          <div class="absolute inset-0 z-0 pointer-events-none animated-bg-design opacity-50 mix-blend-overlay"></div>
+          <div class="relative z-10 max-w-sm">
+            <div class="flex justify-center items-center mb-6">
+              <img src="/assets/images/logodp.png" alt="Design Logo" class="h-32 w-auto drop-shadow-[0_0_25px_rgba(251,146,60,0.4)]" loading="lazy" decoding="async">
+            </div>
+            <p class="mb-8 text-orange-100/90 font-medium tracking-wide">
+              Discover my creative works including graphic design, UI/UX, and visual art projects.
+            </p>
+
+            <!-- Button acts as visual cue, entire card is clickable -->
+            <div class="learn-more">
+              <span class="circle" aria-hidden="true">
+                <span class="icon arrow"></span>
+              </span>
+              <span class="button-text">View Design Projects</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- CODING PANEL -->
+        <!-- CODING PANEL -->
+        <!-- CODING PANEL -->
+        <!-- CODING PANEL -->
+        <div id="programming-panel" onclick="window.location.href='coding.html'" class="relative z-0 min-h-[420px] bg-gradient-to-br from-cyan-900/40 via-blue-900/40 to-indigo-900/40 animate-gradient-xy backdrop-blur-xl border border-cyan-500/20 text-white p-8 flex flex-col justify-center items-center text-center cursor-pointer hover:scale-[1.02] transition-transform duration-300 overflow-hidden">
+          <div class="absolute inset-0 z-0 pointer-events-none animated-bg-coding opacity-50 mix-blend-overlay"></div>
+          <div class="relative z-10 max-w-sm">
+            <div class="flex justify-center items-center mb-6">
+              <img src="/assets/images/LOGOCP.png" alt="Coding Logo" class="h-32 w-auto drop-shadow-[0_0_25px_rgba(34,211,238,0.4)]" loading="lazy" decoding="async">
+            </div>
+            <p class="mb-8 text-cyan-100/90 font-medium tracking-wide">
+              Explore my development projects, including web applications and full-stack solutions.
+            </p>
+
+            <!-- Button acts as visual cue, entire card is clickable -->
+            <div class="learn-more">
+              <span class="circle" aria-hidden="true">
+                <span class="icon arrow"></span>
+              </span>
+              <span class="button-text">View Coding Projects</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ARTICLES -->
+    <section id="article-section" class="py-24 px-4 bg-dark">
+      <div class="max-w-5xl mx-auto">
+        <div class="text-center mb-16">
+          <img src="/assets/images/article.png" alt="Icône d'articles" class="h-48 md:h-56 w-auto mx-auto mb-6" loading="lazy" decoding="async">
+          <p class="text-gray-400 mt-4 text-lg">Sharing my analysis, tutorials, and thoughts on design and code.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div class="bg-border rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden group">
+            <a href="#" class="block">
+              <img src="assets\images\uxuidesign.jpg" alt="Image UX" class="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy" decoding="async">
+              <div class="p-6">
+                <span class="text-sm text-green font-semibold">UX/UI Design</span>
+                <h3 class="text-xl text-light font-bold mt-2">Improving UX in 5 Steps</h3>
+                <p class="text-gray-400 mt-3">Modern techniques to guide users through a clean and intuitive interface.</p>
+              </div>
+            </a>
+          </div>
+
+          <div class="bg-border rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden group">
+            <a href="#" class="block">
+              <img src="/assets/images/react.jpg" alt="Image React" class="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy" decoding="async">
+              <div class="p-6">
+                <span class="text-sm text-blue font-semibold">Développement</span>
+                <h3 class="text-xl text-light font-bold mt-2">React vs Vue: Which one to choose?</h3>
+                <p class="text-gray-400 mt-3">A comparative analysis to help you make the right technical decision.</p>
+              </div>
+            </a>
+          </div>
+
+          <div class="bg-border rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden group">
+            <a href="#" class="block">
+              <img src="assets/images/productivity.jpg" alt="Image article" class="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy" decoding="async">
+              <div class="p-6">
+                <span class="text-sm text-yellow font-semibold">Productivity</span>
+                <h3 class="text-xl text-light font-bold mt-2">My Top 5 Indispensable Tools</h3>
+                <p class="text-gray-400 mt-3">Section under construction with new articles coming soon.</p>
+              </div>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SKILLS -->
+    <section id="skills" class="py-20 md:py-28 bg-dark relative overflow-hidden">
+      <div class="max-w-7xl mx-auto px-4 relative z-10">
+        <div class="flex justify-center mb-12 animate-on-scroll">
+          <img src="assets/images/Skills.png" alt="Skills" class="w-96 h-auto">
+        </div>
+
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          
+          <!-- Skill Card 1 -->
+          <div class="p-6 rounded-2xl bg-white/5 border border-white/10 hover:border-cyan-400/50 transition-all duration-300 group animate-on-scroll" data-tilt>
+            <div class="flex items-center gap-4 mb-4">
+              <div class="p-3 rounded-lg bg-cyan-400/10 text-cyan-400 group-hover:bg-cyan-400 group-hover:text-black transition-colors">
+                <i class="fas fa-globe text-2xl"></i>
+              </div>
+              <h3 class="text-xl font-bold font-sans text-white">Web & Frontend</h3>
+            </div>
+            <p class="text-gray-400 leading-relaxed">
+              HTML5, CSS3, JS ES6+, TypeScript, React.js, Vue.js, GSAP, Tailwind, SEO, WCAG
+            </p>
+          </div>
+
+          <!-- Skill Card 2 -->
+          <div class="p-6 rounded-2xl bg-white/5 border border-white/10 hover:border-cyan-400/50 transition-all duration-300 group animate-on-scroll" data-tilt style="transition-delay: 100ms;">
+            <div class="flex items-center gap-4 mb-4">
+              <div class="p-3 rounded-lg bg-purple-500/10 text-purple-400 group-hover:bg-purple-500 group-hover:text-black transition-colors">
+                <i class="fas fa-server text-2xl"></i>
+              </div>
+              <h3 class="text-xl font-bold text-white">Backend & API</h3>
+            </div>
+            <p class="text-gray-400 leading-relaxed">
+              Python (Flask/FastAPI), PHP, Node.js, Java, C#/C++, MySQL, MongoDB, RESTful APIs
+            </p>
+          </div>
+
+          <!-- Skill Card 3 -->
+           <div class="p-6 rounded-2xl bg-white/5 border border-white/10 hover:border-cyan-400/50 transition-all duration-300 group animate-on-scroll" data-tilt style="transition-delay: 200ms;">
+            <div class="flex items-center gap-4 mb-4">
+              <div class="p-3 rounded-lg bg-green-500/10 text-green-400 group-hover:bg-green-500 group-hover:text-black transition-colors">
+                <i class="fas fa-robot text-2xl"></i>
+              </div>
+              <h3 class="text-xl font-bold text-white">IA & Automatisation</h3>
+            </div>
+            <p class="text-gray-400 leading-relaxed">
+              OpenAI GPT, Claude, Gemini, n8n, bots Telegram/Discord, Prompt Engineering
+            </p>
+          </div>
+
+          <!-- Skill Card 4 -->
+           <div class="p-6 rounded-2xl bg-white/5 border border-white/10 hover:border-cyan-400/50 transition-all duration-300 group animate-on-scroll" data-tilt>
+            <div class="flex items-center gap-4 mb-4">
+              <div class="p-3 rounded-lg bg-red-500/10 text-red-400 group-hover:bg-red-500 group-hover:text-black transition-colors">
+                <i class="fas fa-gamepad text-2xl"></i>
+              </div>
+              <h3 class="text-xl font-bold text-white">Game Dev</h3>
+            </div>
+            <p class="text-gray-400 leading-relaxed">
+              Unity, C#, JavaFX, game design, projets Agile
+            </p>
+          </div>
+
+          <!-- Skill Card 5 -->
+           <div class="p-6 rounded-2xl bg-white/5 border border-white/10 hover:border-cyan-400/50 transition-all duration-300 group animate-on-scroll" data-tilt style="transition-delay: 100ms;">
+            <div class="flex items-center gap-4 mb-4">
+              <div class="p-3 rounded-lg bg-pink-500/10 text-pink-400 group-hover:bg-pink-500 group-hover:text-black transition-colors">
+                <i class="fas fa-pen-nib text-2xl"></i>
+              </div>
+              <h3 class="text-xl font-bold text-white">Design & Audiovisuel</h3>
+            </div>
+            <p class="text-gray-400 leading-relaxed">
+              Figma, Photoshop, Premiere Pro, After Effects, Illustrator, branding, logo, vidéo
+            </p>
+          </div>
+
+           <!-- Skill Card 6 -->
+           <div class="p-6 rounded-2xl bg-white/5 border border-white/10 hover:border-cyan-400/50 transition-all duration-300 group animate-on-scroll" data-tilt style="transition-delay: 200ms;">
+            <div class="flex items-center gap-4 mb-4">
+              <div class="p-3 rounded-lg bg-yellow-500/10 text-yellow-400 group-hover:bg-yellow-500 group-hover:text-black transition-colors">
+                <i class="fas fa-chart-line text-2xl"></i>
+              </div>
+              <h3 class="text-xl font-bold text-white">Trading, E-commerce & DevOps</h3>
+            </div>
+            <p class="text-gray-400 leading-relaxed">
+              MetaTrader 5, Shopify, WordPress, Git, CI/CD, Scrum/Kanban
+            </p>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section id="contact-section" class="py-24 bg-dark relative overflow-hidden">
+      <!-- Background Elements -->
+      <div class="absolute inset-0 pointer-events-none">
+        <div class="absolute top-20 left-10 w-72 h-72 bg-cyan-500/10 rounded-full blur-3xl animate-pulse-slow"></div>
+        <div class="absolute bottom-20 right-10 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl animate-pulse-slow" style="animation-delay: 2s;"></div>
+      </div>
+
+      <div class="max-w-5xl mx-auto px-4 relative z-10">
+        <div class="text-center mb-16 animate-on-scroll">
+          <img src="assets/images/contact.png" alt="Contact" class="w-64 h-auto mx-auto mb-6 animate-bounce-slow">
+          <p class="text-lg text-gray-400 max-w-2xl mx-auto">
+            Ready to start your next project? I'm available for freelance work and partnerships.
+          </p>
+        </div>
+
+        <div class="grid md:grid-cols-5 gap-10 bg-gradient-to-br from-gray-900/80 via-gray-800/60 to-gray-900/80 backdrop-blur-2xl border border-cyan-500/20 rounded-3xl overflow-hidden shadow-[0_0_50px_rgba(6,182,212,0.2)] animate-on-scroll">
+          
+          <!-- Contact Info (Left) -->
+          <div class="md:col-span-2 bg-gradient-to-br from-cyan-600/30 via-purple-600/20 to-pink-600/30 p-10 flex flex-col justify-between relative overflow-hidden">
+            <!-- Animated background orbs -->
+            <div class="absolute top-0 left-0 w-32 h-32 bg-cyan-500/20 rounded-full blur-2xl animate-pulse"></div>
+            <div class="absolute bottom-0 right-0 w-40 h-40 bg-purple-500/20 rounded-full blur-2xl animate-pulse" style="animation-delay: 1s;"></div>
+            
+            <div class="relative z-10">
+              <h3 class="text-3xl font-black text-white mb-6" style="font-family: 'Space Mono', monospace;">CONTACT INFO</h3>
+              <p class="text-gray-300 mb-8 leading-relaxed">
+                Fill up the form and I will get back to you within 24 hours.
+              </p>
+              
+              <div class="space-y-6">
+                <a href="mailto:mohamed.slimani.contact@gmail.com" class="flex items-center gap-4 text-gray-300 hover:text-cyan-400 transition-all duration-300 group">
+                  <div class="w-12 h-12 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center group-hover:bg-gradient-to-br group-hover:from-blue-600 group-hover:to-cyan-500 group-hover:text-white transition-all duration-300 group-hover:scale-110 group-hover:rotate-6 shadow-[0_0_15px_rgba(0,0,0,0.3)]">
+                    <i class="fas fa-paper-plane text-sm"></i>
+                  </div>
+                  <span class="contact-txt text-sm font-medium tracking-wide">mohamed.slimani.contact@gmail.com</span>
+                </a>
+                
+                <a href="https://www.linkedin.com/in/mohamed-slimani-7a53ba240" target="_blank" class="flex items-center gap-4 text-gray-300 hover:text-cyan-400 transition-all duration-300 group">
+                  <div class="w-12 h-12 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center group-hover:bg-gradient-to-br group-hover:from-blue-600 group-hover:to-cyan-500 group-hover:text-white transition-all duration-300 group-hover:scale-110 group-hover:rotate-6 shadow-[0_0_15px_rgba(0,0,0,0.3)]">
+                    <i class="fab fa-linkedin-in text-lg"></i>
+                  </div>
+                  <span class="font-medium tracking-wide">LinkedIn</span>
+                </a>
+                
+                <a href="https://github.com/slimmohamed" target="_blank" class="flex items-center gap-4 text-gray-300 hover:text-cyan-400 transition-all duration-300 group">
+                  <div class="w-12 h-12 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center group-hover:bg-gradient-to-br group-hover:from-blue-600 group-hover:to-cyan-500 group-hover:text-white transition-all duration-300 group-hover:scale-110 group-hover:rotate-6 shadow-[0_0_15px_rgba(0,0,0,0.3)]">
+                    <i class="fab fa-github text-lg"></i>
+                  </div>
+                  <span class="font-medium tracking-wide">GitHub</span>
+                </a>
+              </div>
+            </div>
+            
+            <div class="mt-10 relative z-10">
+              <div class="flex gap-3">
+                <div class="w-3 h-3 rounded-full bg-gradient-to-r from-cyan-400 to-blue-500 animate-pulse"></div>
+                <div class="w-3 h-3 rounded-full bg-white/50 animate-pulse" style="animation-delay: 0.3s;"></div>
+                <div class="w-3 h-3 rounded-full bg-white/30 animate-pulse" style="animation-delay: 0.6s;"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Contact Form (Right) -->
+          <div class="md:col-span-3 p-10 bg-gradient-to-br from-gray-800/40 to-gray-900/40">
+            <form action="https://formspree.io/f/xdkdnajl" method="POST" class="space-y-6">
+              <div class="grid md:grid-cols-2 gap-6">
+                <div class="relative group">
+                  <label class="block text-xs font-bold text-cyan-400 mb-2 uppercase tracking-wider" for="name" style="font-family: 'Space Mono', monospace;">Name</label>
+                  <input type="text" id="name" name="name" class="w-full px-4 py-3 bg-white/5 border-2 border-white/10 rounded-xl text-white placeholder-gray-500 focus:border-cyan-500 focus:outline-none focus:ring-2 focus:ring-cyan-500/50 transition-all duration-300 hover:border-white/20" placeholder="John Doe" required>
+                </div>
+                <div class="relative group">
+                  <label class="block text-xs font-bold text-cyan-400 mb-2 uppercase tracking-wider" for="email" style="font-family: 'Space Mono', monospace;">Email</label>
+                  <input type="email" id="email" name="email" class="w-full px-4 py-3 bg-white/5 border-2 border-white/10 rounded-xl text-white placeholder-gray-500 focus:border-cyan-500 focus:outline-none focus:ring-2 focus:ring-cyan-500/50 transition-all duration-300 hover:border-white/20" placeholder="john@example.com" required>
+                </div>
+              </div>
+              
+              <div class="relative group">
+                <label class="block text-xs font-bold text-cyan-400 mb-2 uppercase tracking-wider" for="subject" style="font-family: 'Space Mono', monospace;">Subject</label>
+                <input type="text" id="subject" name="subject" class="w-full px-4 py-3 bg-white/5 border-2 border-white/10 rounded-xl text-white placeholder-gray-500 focus:border-cyan-500 focus:outline-none focus:ring-2 focus:ring-cyan-500/50 transition-all duration-300 hover:border-white/20" placeholder="Project Proposal">
+              </div>
+
+              <div class="relative group">
+                <label class="block text-xs font-bold text-cyan-400 mb-2 uppercase tracking-wider" for="message" style="font-family: 'Space Mono', monospace;">Message</label>
+                <textarea id="message" name="message" class="w-full px-4 py-3 bg-white/5 border-2 border-white/10 rounded-xl text-white placeholder-gray-500 focus:border-cyan-500 focus:outline-none focus:ring-2 focus:ring-cyan-500/50 transition-all duration-300 hover:border-white/20 h-32 resize-none" placeholder="Tell me about your project..." required></textarea>
+              </div>
+
+              <button type="submit" class="w-full py-4 px-6 rounded-full bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-500 text-white font-bold text-lg tracking-wide shadow-[0_0_30px_rgba(79,70,229,0.4)] hover:shadow-[0_0_50px_rgba(34,211,238,0.6)] transition-all duration-500 transform hover:scale-105 hover:-translate-y-1 relative overflow-hidden group" style="font-family: 'Syne', sans-serif;">
+                <span class="relative z-10 flex items-center justify-center gap-3">
+                  SEND MESSAGE
+                  <i class="fas fa-paper-plane"></i>
+                </span>
+                <div class="absolute inset-0 bg-gradient-to-r from-cyan-500 via-blue-500 to-indigo-600 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- FOOTER -->
+    <!-- FOOTER -->
+    <footer class="bg-dark/95 backdrop-blur-md text-light py-12 px-4 shadow-inner border-t border-white/5 relative overflow-hidden">
+      <!-- Gradient Top Border -->
+      <div class="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-cyan-500 to-transparent opacity-50"></div>
+      
+      <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-8">
+        <!-- Brand -->
+        <div class="flex items-center gap-3">
+            <img src="/assets/images/neoslim-logo.gif" alt="NeoSlim" class="h-10 w-auto">
+            <span class="font-bold text-lg tracking-wide bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-400" style="font-family: 'Syne', sans-serif;">Mohamed Slimani</span>
+        </div>
+
+        <!-- Social Links -->
+        <div class="flex gap-6">
+            <a href="https://github.com/slimmohamed" class="text-gray-400 hover:text-white transition-colors hover:scale-110 duration-300"><i class="fab fa-github text-xl"></i></a>
+            <a href="https://www.linkedin.com/in/mohamed-slimani-7a53ba240" class="text-gray-400 hover:text-blue-400 transition-colors hover:scale-110 duration-300"><i class="fab fa-linkedin text-xl"></i></a>
+            <a href="mailto:mohamed.slimani.contact@gmail.com" class="text-gray-400 hover:text-cyan-400 transition-colors hover:scale-110 duration-300"><i class="fas fa-envelope text-xl"></i></a>
+        </div>
+
+        <!-- Copyright -->
+        <div class="text-center md:text-right text-sm text-gray-500">
+          <p>&copy; 2025 Mohamed Slimani. All rights reserved.</p>
+          <p class="text-xs mt-1 text-gray-600">Built with <span class="text-red-500 animate-pulse">❤️</span> & AI</p>
+        </div>
+      </div>
+    </footer>
+
+  </main>
+
+  <!-- Chart.js (defer not needed, already last) -->
+
+
+  <!-- Main JS -->
+  <script src="/assets/js/main.js?v=2"></script>
+
+
+
+</body>
+</html>

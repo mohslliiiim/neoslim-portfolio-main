@@ -1,0 +1,51 @@
+<!-- ANNOUNCEMENT BAR -->
+<!-- Add this RIGHT AFTER the </div> on line 57, BEFORE the <!-- HEADER --> comment -->
+
+<div id="announcementBar" class="fixed top-0 left-0 right-0 z-[100] bg-gradient-to-r from-cyan-600 via-purple-600 to-pink-600 text-white py-3 px-4 shadow-lg">
+  <div class="max-w-7xl mx-auto flex items-center justify-between gap-4">
+    <div class="flex-1 flex items-center justify-center gap-3">
+      <svg class="w-5 h-5 animate-pulse flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+        <path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6zM10 18a3 3 0 01-3-3h6a3 3 0 01-3 3z"/>
+      </svg>
+      <p class="text-sm md:text-base font-semibold tracking-wide" style="font-family: 'Space Mono', monospace;">
+        🎉 <span class="font-bold">NEW:</span> Portfolio updated with latest projects! Check them out below →
+      </p>
+    </div>
+    <button id="closeAnnouncement" class="flex-shrink-0 w-8 h-8 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center transition-all duration-300 hover:rotate-90">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+      </svg>
+    </button>
+  </div>
+</div>
+
+<!-- ALSO UPDATE THE HEADER TAG (line 61) -->
+<!-- Change from: -->
+<header class="fixed top-0 left-0 w-full h-20 md:h-24 z-50 transition-all duration-300 bg-black/30 backdrop-blur-md border-b border-white/10 shadow-lg">
+
+<!-- To: -->
+<header class="fixed top-0 left-0 w-full h-20 md:h-24 z-50 transition-all duration-300 bg-black/30 backdrop-blur-md border-b border-white/10 shadow-lg" style="margin-top: 48px;">
+
+<!-- ADD THIS JAVASCRIPT BEFORE THE CLOSING </body> TAG -->
+<script>
+  // Announcement Bar Close Functionality
+  document.addEventListener('DOMContentLoaded', function() {
+    const announcementBar = document.getElementById('announcementBar');
+    const closeBtn = document.getElementById('closeAnnouncement');
+    const mainHeader = document.querySelector('header');
+
+    if (closeBtn && announcementBar) {
+      closeBtn.addEventListener('click', function() {
+        announcementBar.style.transform = 'translateY(-100%)';
+        announcementBar.style.opacity = '0';
+        
+        setTimeout(function() {
+          announcementBar.style.display = 'none';
+          if (mainHeader) {
+            mainHeader.style.marginTop = '0';
+          }
+        }, 300);
+      });
+    }
+  });
+</script>

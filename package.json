@@ -1,0 +1,41 @@
+{
+  "name": "neoslim-portfolio",
+  "version": "1.0.0",
+  "description": "**Personal portfolio for Mohamed Slimani.**  \r Showcasing development, design, and animation projects with a modern UI.",
+  "main": "tailwind.config.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build:css": "tailwindcss -i assets/css/input.css -o assets/css/tailwind.css",
+    "watch:css": "tailwindcss -i assets/css/input.css -o assets/css/tailwind.css --watch",
+
+    "dev": "concurrently \"npm run watch:css\" \"live-server\"",
+    "start": "npm run dev",
+    "build": "tailwindcss -i assets/css/input.css -o assets/css/tailwind.css --minify"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "autoprefixer": "^10.4.21",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^4.1.11",
+    "concurrently": "^8.2.2",
+    "live-server": "^1.2.2"
+  },
+  "dependencies": {
+    "@tailwindcss/forms": "^0.5.10",
+    "@tailwindcss/postcss": "^4.1.11",
+    "chart.js": "^4.5.0",
+    "flowbite": "^3.1.2",
+    "gsap": "^3.13.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Slimmohamed/neoslim-portfolio.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Slimmohamed/neoslim-portfolio/issues"
+  },
+  "homepage": "https://github.com/Slimmohamed/neoslim-portfolio#readme"
+}
